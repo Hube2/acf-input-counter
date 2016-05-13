@@ -29,12 +29,12 @@
 		private function run() {
 			// cannot run on field group editor or it will
 			// add code to every ACF field in the editor
-			if (isset($_GET['post'])) {
-				if (get_post_type(intval($_GET['post'])) == 'acf-field-group') {
-					return false;
-				}
+			$run = true;
+			global $post;
+			if ($post && $post->ID && get_post_type($post->ID) == 'acf-field-group') {
+				$run = false;
 			}
-			return true;
+			return $run;
 		} // end private function run
 		
 		public function scripts() {
