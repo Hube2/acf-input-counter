@@ -23,7 +23,7 @@
 			add_action('acf/render_field/type=text', array($this, 'render_field'), 20, 1);
 			add_action('acf/render_field/type=textarea', array($this, 'render_field'), 20, 1);
 			add_action('admin_head', array($this, 'admin_head'));
-			add_action('admin_enqueue_scripts', array($this, 'scripts'));
+			add_action('acf/input/admin_enqueue_scripts', array($this, 'scripts'));
 		} // end public function __construct
 		
 		private function run() {
@@ -44,7 +44,7 @@
 			// wp_enqueue_script
 			$handle = 'acf-input-counter';
 			$src = plugin_dir_url(__FILE__).'acf-input-counter.js';
-			$deps = array('acf-field');
+			$deps = array('acf-input');
 			$ver = $this->version;
 			$in_footer = false;
 			wp_enqueue_script($handle, $src, $deps, $ver, $in_footer);

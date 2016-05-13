@@ -1,7 +1,7 @@
 
 (function($) {
 	acf.fields.text_counter = acf.field.extend({
-		type: 'text',
+		//type: 'text',
 		
 		events: {
 			'input input': 'change_count',
@@ -23,7 +23,7 @@
 
 (function($) {
 	acf.fields.textarea_counter = acf.field.extend({
-		type: 'textarea',
+		//type: 'textarea',
 		
 		events: {
 			'input textarea': 'change_count',
