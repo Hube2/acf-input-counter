@@ -44,7 +44,7 @@
 			// wp_enqueue_script
 			$handle = 'acf-input-counter';
 			$src = plugin_dir_url(__FILE__).'acf-input-counter.js';
-			$deps = array('acf-field-group');
+			$deps = array('acf-field');
 			$ver = $this->version;
 			$in_footer = false;
 			wp_enqueue_script($handle, $src, $deps, $ver, $in_footer);
