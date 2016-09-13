@@ -62,7 +62,6 @@
             $len = strlen($field['value']);
             $max = $field['maxlength'];
 
-            var_dump($field['wrapper']['class']);
             if ( $field['wrapper']['class'] == 'acf_counter' ) {
             ?>
                 <span class="char-count">
