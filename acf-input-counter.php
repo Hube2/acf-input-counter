@@ -49,6 +49,7 @@
             $ver = $this->version;
             $in_footer = false;
             wp_enqueue_script($handle, $src, $deps, $ver, $in_footer);
+            wp_enqueue_style('acf-counter', plugins_url( 'acf-counter.css' , __FILE__ ));
         } // end public function scripts
 
         public function render_field($field) {
@@ -72,16 +73,6 @@
             if (!$this->run()) {
                 return;
             }
-            ?>
-                <style type="text/css">
-                    .acf-field .char-count {
-                        display: inline-block;
-                        font-weight: bold;
-                        font-style: italic;
-                        margin-top: .5em;
-                    }
-                </style>
-            <?php
         } // end public function admin_head
 
     } // end class acf_input_counter
