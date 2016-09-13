@@ -61,12 +61,16 @@
             }
             $len = strlen($field['value']);
             $max = $field['maxlength'];
+
+            var_dump($field['wrapper']['class']);
+            if ( $field['wrapper']['class'] == 'acf_counter' ) {
             ?>
                 <span class="char-count">
                     <?php echo __('Characters', 'dvp'); ?>: <span class="count"><?php echo $len; ?></span>
                     <?php echo __('of', 'dvp'); ?> <?php echo $max; ?>
                 </span>
             <?php
+            }
         } // end public function render_field
 
         public function admin_head() {
