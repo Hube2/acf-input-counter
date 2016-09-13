@@ -23,7 +23,6 @@
 		public function __construct() {
 			add_action('acf/render_field/type=text', array($this, 'render_field'), 20, 1);
 			add_action('acf/render_field/type=textarea', array($this, 'render_field'), 20, 1);
-			add_action('admin_head', array($this, 'admin_head'));
 			add_action('acf/input/admin_enqueue_scripts', array($this, 'scripts'));
 		} // end public function __construct
 
@@ -71,12 +70,6 @@
 			<?php
 			}
 		} // end public function render_field
-
-		public function admin_head() {
-			if (!$this->run()) {
-				return;
-			}
-		} // end public function admin_head
 
 	} // end class acf_input_counter
 
