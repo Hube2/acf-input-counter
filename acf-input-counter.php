@@ -62,8 +62,8 @@
             $max = $field['maxlength'];
             ?>
                 <span class="char-count">
-                    {{ __('Characters', 'dvp') }}: <span class="count"><?php echo $len; ?></span>
-                    {{ __('of', 'dvp') }} <?php echo $max; ?>
+                    <?php echo __('Characters', 'dvp'); ?>: <span class="count"><?php echo $len; ?></span>
+                    <?php echo __('of', 'dvp'); ?> <?php echo $max; ?>
                 </span>
             <?php
         } // end public function render_field
