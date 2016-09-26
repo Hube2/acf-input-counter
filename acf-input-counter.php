@@ -52,6 +52,7 @@
 		} // end public function scripts
 
 		public function render_field($field) {
+			//echo '<pre>'; print_r($field); echo '</pre>';
 			if (!$this->run() ||
 			    !$field['maxlength'] ||
 			    ($field['type'] != 'text' && $field['type'] != 'textarea')) {
@@ -60,15 +61,12 @@
 			}
 			$len = strlen($field['value']);
 			$max = $field['maxlength'];
-
-			if ( $field['wrapper']['class'] == 'acf_counter' ) {
 			?>
 				<span class="char-count">
 					<?php echo __('Characters', 'dvp'); ?>: <span class="count"><?php echo $len; ?></span>
 					<?php echo __('of', 'dvp'); ?> <?php echo $max; ?>
 				</span>
 			<?php
-			}
 		} // end public function render_field
 
 	} // end class acf_input_counter
