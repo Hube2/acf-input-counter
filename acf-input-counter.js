@@ -9,7 +9,7 @@
 		
 		change_count: function(e){
 			var $max = e.$el.attr('maxlength');
-			if (typeof($max) == 'undefined') {
+			if (typeof($max) == 'undefined' || e.$el.closest('.acf-input').find('.count').length == 0) {
 				return;
 			}
 			var $value = e.$el.val();
