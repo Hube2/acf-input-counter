@@ -61,6 +61,32 @@
 			}
 			$len = strlen($field['value']);
 			$max = $field['maxlength'];
+			
+			$classes = apply_filters('acf-input-counter/classes', array());
+			$ids = apply_filters('acf-input-counter/ids', array());
+			
+			$insert = true;
+			if (count($classes) || count($ids)) {
+				$insert = false;
+				
+				$exist = array();
+				if ($field['wrapper']['class']) {
+					$exist = explode(' ', $field['wrapper']['class']);
+				}
+				$insert = $this->check($classes, $exist);
+				
+				if (!$insert && $field['wrapper']['id']) {
+					$exist = array();
+					if ($field['wrapper']['id']) {
+						$exist = explode(' ', $field['wrapper']['id']);
+					}
+					$insert = $this->check($ids, $exist);
+				}
+			} // end if filter classes or ids
+				
+			if (!$insert) {
+				return;
+			}
 			?>
 				<span class="char-count">
 					<?php 
@@ -69,6 +95,16 @@
 				</span>
 			<?php
 		} // end public function render_field
+		
+		private function check($allow, $exist) {
+			// if there is anything in $allow
+			// see if any of those values are in $exist
+			$intersect = array_intersect($allow, $exist);
+			if (count($intersect)) {
+				return true;
+			}
+			return false;
+		} // end private function check
 
 	} // end class acf_input_counter
 
