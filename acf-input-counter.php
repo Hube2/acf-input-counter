@@ -4,7 +4,7 @@
 		Plugin Name: ACF Input Counter
 		Plugin URI: https://github.com/Hube2/acf-input-counter/
 		Description: Show character count for limited text and textarea fields
-		Version: 1.1.1
+		Version: 1.2.0
 		Author: John A. Huebner II
 		Author URI: https://github.com/Hube2/
 		GitHub Plugin URI: https://github.com/Hube2/acf-input-counter/
@@ -18,7 +18,7 @@
 
 	class acf_input_counter {
 
-		private $version = '1.1.1';
+		private $version = '1.2.0';
 
 		public function __construct() {
 			add_action('acf/render_field/type=text', array($this, 'render_field'), 20, 1);
@@ -99,10 +99,14 @@
 			if (!$insert) {
 				return;
 			}
+			$display = 'chars: %%len%% of %%max%%';
+			$display = apply_filters('acf-input-counter/display', $display);
+			$display = str_replace('%%len%%', '<span class="count">'.$len.'</span>', $display);
+			$display = str_replace('%%max%%', $max, $display);
 			?>
 				<span class="char-count">
 					<?php 
-						echo 'chars: <span class="count">',$len,'</span> of ',$max;
+						echo $display;
 					?>
 				</span>
 			<?php

@@ -43,3 +43,21 @@ function my_input_counter_filter($ids=array()) {
 	return $ids;
 }
 ```
+
+### Filter the Display
+To filter the display add a filter wherever you would add a filter
+```
+add_filter('acf-input-counter/display', 'my_acf_counter_filter');
+function my_acf_counter_filter($display) {
+  $display = 'Characters = %%len%% of %%max%%';
+	return $display;
+}
+```
+In the example string above `%%len%%` represents where you want the current character count shown and `%%max%%`
+represents where you want the fields maximum length displayed. You can generate this string any way you want.
+For example, you can translate it or use `sprintf()`, as long as it contains the two markers where the values
+should be shown. If you do not include these markers then they simply will not be shown. It's up to you to
+make sure they are present.
+
+I've puzzled with how to allow this to be altered and this is the best I've been able to come up with.
+If you have a better idea, let me know in the issues.
