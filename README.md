@@ -61,3 +61,15 @@ make sure they are present.
 
 I've puzzled with how to allow this to be altered and this is the best I've been able to come up with.
 If you have a better idea, let me know in the issues.
+
+#### Automatic Updates
+Install [GitHub Updater](https://github.com/afragen/github-updater) on your site if you want to recieve automatic
+updates for this plugin.
+
+#### Remove Nag
+You may notice that I've started adding a little nag to my plugins. It's just a box on some pages that lists my
+plugins that you're using with a request do consider making a donation for using them. If you want to disable them
+add the following filter to your functions.php file.
+```
+add_filter('remove_hube2_nag', '__return_true');
+```
