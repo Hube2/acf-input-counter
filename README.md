@@ -2,7 +2,7 @@
 
 Supports ACF 5
 
-Adds a counter to all text and textarea fields with character limits
+Adds a counter to all text and textarea fields with character limits.
 
 This is a simple plugin that will add a counter below all ACF text and text area fields to show how many
 characters have been added and what the limit is. The display will look something like this:
