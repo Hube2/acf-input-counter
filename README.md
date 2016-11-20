@@ -32,7 +32,7 @@ function my_input_counter_filter($classes=array()) {
 	return $classes;
 }
 ```
-fields that have one of the classes or ids will include a counter.
+Fields that have one of the classes or ids will include a counter.
 
 **Filter by ID**
 ```
@@ -79,4 +79,6 @@ add_filter('remove_hube2_nag', '__return_true');
 ```
 
 ### i18n
-The plugin is now also internationalized and it has a .pot file.
+The plugin is now also internationalized and it has a .pot file. Also included is a Dutch translation by [Beee][1].
+
+[1]: https://github.com/Beee4life/
