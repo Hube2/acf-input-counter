@@ -45,7 +45,7 @@ function my_input_counter_filter($ids=array()) {
 ```
 
 ### Filter the Display
-To filter the display add a filter wherever you would add a filter
+To filter the display add a filter wherever you would add a filter.
 ```
 add_filter('acf-input-counter/display', 'my_acf_counter_filter');
 function my_acf_counter_filter($display) {
