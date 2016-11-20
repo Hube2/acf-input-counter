@@ -50,10 +50,10 @@ To filter the display add a filter wherever you would add a filter
 add_filter('acf-input-counter/display', 'my_acf_counter_filter');
 function my_acf_counter_filter($display) {
     $display = sprintf(
-                __('Characters = %1$s of %2$s', 'acf-counter'),
-                '%%len%%',
-                '%%max%%'
-            );
+        __('Characters = %1$s of %2$s', 'acf-counter'),
+        '%%len%%',
+        '%%max%%'
+    );
 	return $display;
 }
 ```
