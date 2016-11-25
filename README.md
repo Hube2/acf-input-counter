@@ -2,7 +2,7 @@
 
 Supports ACF 5
 
-Adds a counter to all text and textarea fields with character limits
+Adds a counter to all text and textarea fields with character limits.
 
 This is a simple plugin that will add a counter below all ACF text and text area fields to show how many
 characters have been added and what the limit is. The display will look something like this:
@@ -32,7 +32,7 @@ function my_input_counter_filter($classes=array()) {
 	return $classes;
 }
 ```
-fields that have one of the classes or ids will include a counter.
+Fields that have one of the classes or ids will include a counter.
 
 **Filter by ID**
 ```
@@ -45,11 +45,15 @@ function my_input_counter_filter($ids=array()) {
 ```
 
 ### Filter the Display
-To filter the display add a filter wherever you would add a filter
+To filter the display add a filter wherever you would add a filter.
 ```
 add_filter('acf-input-counter/display', 'my_acf_counter_filter');
 function my_acf_counter_filter($display) {
-  $display = 'Characters = %%len%% of %%max%%';
+    $display = sprintf(
+        __('Characters = %1$s of %2$s', 'acf-counter'),
+        '%%len%%',
+        '%%max%%'
+    );
 	return $display;
 }
 ```
@@ -73,3 +77,8 @@ add the following filter to your functions.php file.
 ```
 add_filter('remove_hube2_nag', '__return_true');
 ```
+
+### i18n
+The plugin is now also internationalized and it has a .pot file. Also included is a Dutch translation by [Beee][1].
+
+[1]: https://github.com/Beee4life/
