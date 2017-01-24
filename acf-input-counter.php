@@ -22,16 +22,26 @@
 
 		private $version = '1.4.0';
 
+		public $limited_char_types = ['text', 'textarea', 'wysiwyg', 'qtranslate_text', 'qtranslate_textarea', 'qtranslate_wysiwyg'];
+
 		public function __construct() {
+                        $this->defaults = array(
+                                'show_prefix' => 0,
+                        );
 			add_action('plugins_loaded', 					array($this, 'acf_counter_load_plugin_textdomain'));
-			add_action('acf/render_field/type=text', 		array($this, 'render_field'), 20, 1);
-			add_action('acf/render_field/type=textarea', 	array($this, 'render_field'), 20, 1);
-			add_action('acf/input/admin_enqueue_scripts', 	array($this, 'scripts'));
+                        foreach ($this->limited_char_types as $type) {
+                                add_action('acf/render_field/type=' . $type,                        array($this, 'render_field'), 20, 1);                            
+                        }
+                        add_action('wp_ajax_get_maxlength',                             array($this, 'get_maxlength'));
+                        add_filter('acf/prepare_field',                                 array($this, 'counter_prepare_field'), 9, 1);
+                        add_action('acf/render_field_settings',                         array($this, 'additional_render_field_settings'), 10, 1);
+                        add_action('acf/input/admin_footer',                            array($this, 'counter_input_admin_footer'));
+			add_action('acf/input/admin_enqueue_scripts',                   array($this, 'scripts'));
 			add_filter('jh_plugins_list', 					array($this, 'meta_box_data'));
 		} // end public function __construct
 
 		public function acf_counter_load_plugin_textdomain() {
-	    	load_plugin_textdomain( 'acf-counter', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
+                        load_plugin_textdomain( 'acf-counter', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 		}
 
 			function meta_box_data($plugins=array()) {
@@ -69,12 +79,88 @@
 			wp_enqueue_script($handle, $src, $deps, $ver, $in_footer);
 			wp_enqueue_style('acf-counter', plugins_url( 'acf-counter.css' , __FILE__ ));
 		} // end public function scripts
+                
+                /**
+                 * counter_prepare_field
+                 * 
+                 * prevent rendering of default "maxlength" field setting in its own line
+                 * 
+                 * @param array $field
+                 * @return boolean
+                 * 
+                 */
+                function counter_prepare_field($field) {
+                        preg_match('/.*\[([^]]+)\]/', $field['name'], $matches);
+
+                        $replace = [
+                            'maxlength',
+                        ];
+                        
+                        if (isset($matches[1])) {
+                            if (in_array($matches[1], $replace)) {
+                                if ( !isset($field['wrapper']['data-name']) ) {
+                                    return;
+                                }
+                                
+                            }
+                        }
+
+                        // return
+                        return $field;
+                }
+                
+                /**
+                 * additional_render_field_settings
+                 * 
+                 * add "maxlength" and "show_prefix" settings inside same row
+                 * 
+                 * @param type $field
+                 */
+                function additional_render_field_settings($field) {
+                        if( in_array( $field['type'], $this->limited_char_types) ){
+                            isset($field['show_prefix']) ? $value = $field['show_prefix'] : $value = '';
+                            
+                                // wrapper                                
+				acf_render_field_wrap(array(
+					'label'			=> __('Character Limit','acf'),
+					'instructions'          => __( 'Show \'chars:\' in front of the counter', 'acf-counter' ),
+					'type'			=> 'true_false',
+					'name'			=> 'show_prefix',
+					'ui_on_text'		=> __('Yes','acf'),
+					'ui_off_text'		=> __('No','acf'),
+                                        'ui'			=> 1,
+					'prefix'		=> $field['prefix'] ,
+					'value'			=> $value,
+					'message'		=> __( 'Show prefix', 'acf-counter' ),
+					'wrapper'		=> array(
+                                                'data-name' => 'show_prefix'
+					)
+				), 'tr', 'field');
+                                
+                            isset($field['maxlength']) ? $maxlength = $field['maxlength'] : $maxlength = '';
+                            
+                                acf_render_field_wrap(array(
+                                            'label'		=> __('Character Limit','acf'),
+                                            'instructions'      => __('Leave blank for no limit','acf'),
+                                            'type'		=> 'number',
+                                            'name'		=> 'maxlength',
+                                            'prefix'		=> $field['prefix'],
+                                            'value'		=> $maxlength,
+                                            'prepend'		=> __('Character Limit','acf'),
+                                            'append'		=> '',
+                                            'wrapper'		=> array(
+                                                    'data-name' => 'maxlength',
+                                                    'data-append' => 'show_prefix'
+                                            )
+                                ), 'tr', 'field');
+                        }
+                }
 
 		public function render_field($field) {
 			//echo '<pre>'; print_r($field); echo '</pre>';
 			if (!$this->run() ||
-			    !$field['maxlength'] ||
-			    ($field['type'] != 'text' && $field['type'] != 'textarea')) {
+			    !isset($field['maxlength']) ||
+			    ($field['type'] != 'text' && $field['type'] != 'textarea') && $field['type'] != 'qtranslate_text' && $field['type'] != 'qtranslate_textarea' && $field['type'] != 'wysiwyg' && $field['type'] != 'qtranslate_wysiwyg') {
 				// only run on text and text area fields when maxlength is set
 				return;
 			}
@@ -106,14 +192,29 @@
 			if (!$insert) {
 				return;
 			}
-			$display = sprintf(
-				__('chars: %1$s of %2$s', 'acf-counter'),
-				'%%len%%',
-				'%%max%%'
-			);
+                        
+                        if ( !isset($field['show_prefix']) ) {
+                                $field['show_prefix'] = 0;
+                        }
+                        
+                        if ( $field['show_prefix'] == 1 ) {
+ 				$display = sprintf(
+ 					__('chars: %1$s of %2$s', 'acf-counter'),
+ 					'%%len%%',
+ 					'%%max%%'
+ 				);
+ 			} else {
+ 				$display = sprintf(
+ 					__('%1$s of %2$s', 'acf-counter'),
+ 					'%%len%%',
+ 					'%%max%%'
+ 				);
+ 			}
+                        
 			$display = apply_filters('acf-input-counter/display', $display);
 			$display = str_replace('%%len%%', '<span class="count">'.$len.'</span>', $display);
 			$display = str_replace('%%max%%', $max, $display);
+                        if(isset($field['maxlength']) && $field['maxlength'] > 0 ){
 			?>
 				<span class="char-count">
 					<?php
@@ -121,6 +222,7 @@
 					?>
 				</span>
 			<?php
+                        }
 		} // end public function render_field
 
 		private function check($allow, $exist) {
@@ -132,6 +234,67 @@
 			}
 			return false;
 		} // end private function check
+                
+                /**
+                 * Ajax helper neede to ritrive maxlength for wysiwyg field type
+                 */
+		function get_maxlength() {
+                    $field = get_field_object($_POST['field_key']);
+                    isset($field['maxlength']) ? wp_send_json_success($field) : wp_send_json_error($field);
+		}
+                
+                /**
+                 * Add admin footer script to get get wysiwyg field type check and update counter
+                 */
+                function counter_input_admin_footer() {
+                        ?>
+                        <script type="text/javascript">
+                            (function($){
+                                    acf.add_filter('wysiwyg_tinymce_settings', function( mceInit, id ){
+                                            // do something to mceInit
+                                            mceInit.setup = function( ed ){
+                                                    /**
+                                                     * check counter status before insert new char
+                                                     * on maxlength reached allows backspace, delete and copy/cut keybord shortcuts
+                                                     */
+                                                    ed.on('keyDown', function(e) {
+                                                            // console.log(e);
+                                                            var $max = $(ed.getElement()).attr("maxlength");
+                                                            if (typeof($max) == 'undefined') {
+                                                                    return;
+                                                            }
+                                                            var $value = ed.getContent();
+                                                            var $length = acf.decode($value.replace(/<\/?[^>]+(>|$)/g, "")).length;
+                                                            if($length >= $max 
+                                                                    && e.keyCode != 8 // backspace
+                                                                    && e.keyCode != 46 // delete
+                                                                    && (e.ctrlKey && e.keyCode != 88) // ctrl+x
+                                                                    && (e.ctrlKey && e.keyCode != 67) // ctrl+c
+                                                                    ){
+                                                                tinymce.dom.Event.cancel(e);
+                                                            }
+                                                    });
+                                                    
+                                                    /**
+                                                     * update counter
+                                                     */
+                                                    ed.on('keyUp', function(e) {
+                                                            var $max = $(ed.getElement()).attr("maxlength");
+                                                            if (typeof($max) == 'undefined') {
+                                                                    return;
+                                                            }
+                                                            var $value = ed.getContent();
+                                                            var $length = acf.decode($value.replace(/<\/?[^>]+(>|$)/g, "")).length;
+                                                            $(ed.getElement()).closest('.acf-input').find('.count').text($length);
+                                                    });
+                                            };
+                                            // return
+                                            return mceInit;
+                                    });
+                            })(jQuery);
+                        </script>
+                        <?php
+                }
 
 	} // end class acf_input_counter
 
