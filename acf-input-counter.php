@@ -160,7 +160,7 @@
 			//echo '<pre>'; print_r($field); echo '</pre>';
 			if (!$this->run() ||
 			    !isset($field['maxlength']) ||
-			    ($field['type'] != 'text' && $field['type'] != 'textarea') && $field['type'] != 'qtranslate_text' && $field['type'] != 'qtranslate_textarea' && $field['type'] != 'wysiwyg' && $field['type'] != 'qtranslate_wysiwyg') {
+			    ($field['type'] != 'text' && !in_array( $field['type'], $this->limited_char_types))) {
 				// only run on text and text area fields when maxlength is set
 				return;
 			}
