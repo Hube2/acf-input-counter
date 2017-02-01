@@ -236,7 +236,7 @@
 		} // end private function check
                 
                 /**
-                 * Ajax helper neede to ritrive maxlength for wysiwyg field type
+                 * Ajax helper neede to retrive maxlength for wysiwyg field type
                  */
 		function get_maxlength() {
                     $field = get_field_object($_POST['field_key']);
@@ -264,6 +264,9 @@
                                                                     return;
                                                             }
                                                             var $value = ed.getContent();
+                                                            /**
+                                                             * remove html tags with regexpr to be sure the length is calculated only by visible characters
+                                                             */
                                                             var $length = acf.decode($value.replace(/<\/?[^>]+(>|$)/g, "")).length;
                                                             if($length >= $max 
                                                                     && e.keyCode != 8 // backspace
@@ -284,6 +287,9 @@
                                                                     return;
                                                             }
                                                             var $value = ed.getContent();
+                                                            /**
+                                                             * remove html tags with regexpr to be sure the length is calculated only by visible characters
+                                                             */
                                                             var $length = acf.decode($value.replace(/<\/?[^>]+(>|$)/g, "")).length;
                                                             $(ed.getElement()).closest('.acf-input').find('.count').text($length);
                                                     });
