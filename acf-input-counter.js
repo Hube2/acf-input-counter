@@ -12,6 +12,106 @@
                 });
         });
 
+        /**
+         * default acf.fields.wysiwyg initialization replace the php generated html whit a new one with nue uniq id
+         * the above mentioned replacement prevent qtranslate content hook removal fron related textarea
+         * (because the new id didn't match the id stored in qtranslate initial configuration)
+         * 
+         * solution: redefine acf.fields.wysiwyg.initialize function where replacement lines are simply commented out to prevent replacement
+         * all works fine with wysiwyg inside a repeater field
+         * (more investigations will be needed to check how it works with clone field or flexible content field)
+         * 
+         */
+        acf.fields.wysiwyg.initialize = function () {
+                // bail early if delay
+                if (this.$el.hasClass('delay'))
+                        return;
+
+
+                // bail early if no tinyMCEPreInit (needed by both tinymce and quicktags)
+                if (typeof tinyMCEPreInit === 'undefined')
+                        return;
+
+
+                // generate new id
+                var old_id = this.o.id,
+                        new_id = acf.get_uniqid('acf-editor-'),
+                        html = this.$el.outerHTML();
+
+
+                // replace
+                html = acf.str_replace(old_id, new_id, html);
+
+                /**
+                 * swapping of this.$el and change of this.o.id needs to be prevented to remove qTranslate contentHook for default acf wysiwyg field textarea
+                 * so we need to comment it out
+                 */
+                // swap
+                //this.$el.replaceWith(html);
+
+
+                // update id
+                //this.o.id = new_id
+
+
+                // initialize
+                this.initialize_tinymce();
+                this.initialize_quicktags();
+        }
+
+        // Remove content hooks from standard wysiwyg field
+        acf.add_filter('wysiwyg_tinymce_settings', function (mceInit, id) {
+                if (typeof qTranslateConfig == 'object') {
+                        qTranslateConfig.qtx.removeContentHook(mceInit);
+                        $('#' + id).removeClass('qtranxs-translatable');
+                }
+                // do something to mceInit
+                mceInit.setup = function (ed) {
+                        /**
+                         * check counter status before insert new char
+                         * on maxlength reached allows backspace, delete and copy/cut keybord shortcuts
+                         */
+                        ed.on('keyDown', function (e) {
+                                // console.log(e);
+                                var $max = $(ed.getElement()).attr("maxlength");
+                                if (typeof ($max) == 'undefined') {
+                                        return;
+                                }
+                                var $value = ed.getContent();
+                                /**
+                                 * remove html tags with regexpr to be sure the length is calculated only by visible characters
+                                 */
+                                var $length = acf.decode($value.replace(/<\/?[^>]+(>|$)/g, "")).length;
+                                if ($length >= $max
+                                        && e.keyCode != 8 // backspace
+                                        && e.keyCode != 46 // delete
+                                        && (e.ctrlKey && e.keyCode != 88) // ctrl+x
+                                        && (e.ctrlKey && e.keyCode != 67) // ctrl+c
+                                        ) {
+                                        tinymce.dom.Event.cancel(e);
+                                }
+                        });
+
+                        /**
+                         * update counter
+                         */
+                        ed.on('keyUp', function (e) {
+                                var $max = $(ed.getElement()).attr("maxlength");
+                                if (typeof ($max) == 'undefined') {
+                                        return;
+                                }
+                                var $value = ed.getContent();
+                                /**
+                                 * remove html tags with regexpr to be sure the length is calculated only by visible characters
+                                 */
+                                var $length = acf.decode($value.replace(/<\/?[^>]+(>|$)/g, "")).length;
+                                $(ed.getElement()).closest('.acf-input').find('.count').text($length);
+                        });
+                };
+                // return
+                return mceInit;
+        });
+
         acf.change_count_text = function (e) {
                 var $max = e.$el.attr('maxlength');
                 if (typeof ($max) == 'undefined' || e.$el.closest('.acf-input').find('.count').length == 0) {
@@ -185,12 +285,19 @@
                         'input textarea': 'change_count',
                         'focus textarea': 'change_count',
                         'change .wp-editor-area': 'change_count',
+                        'click .wp-media-buttons button': 'check_editor',
                 },
-                check_maxlength: function (e) {
-                        acf.check_maxlength(e)
+                check_maxlength: function () {
+                        acf.check_maxlength(this)
                 },
                 change_count: function (e) {
                         acf.change_count_textarea(e)
+                },
+                check_editor: function (e) {
+                        /**
+                         * force triggering "change" event on tinymce/quicktags switching
+                         */
+                        $(tinyMCE.activeEditor.targetElm).trigger('change').focus();
                 }
 
         });
@@ -221,8 +328,8 @@
                                 /* Check if TinyMCE is active */
                                 if (tinymceActive) {
                                         var id = $(tinyMCE.activeEditor.container.closest('.multi-language-field')).find('.acf-editor-wrap.current-language textarea').attr('id');
-                                        console.log(tinymce.get(id));
-                                        tinymce.get(id).fire('keyUp');
+                                        if (tinymce.get(id))
+                                                tinymce.get(id).fire('keyUp');
                                 } else {
                                         $('.qtx-wp-editor-area').trigger('change').focus();
                                 }
