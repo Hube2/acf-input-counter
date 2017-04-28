@@ -78,7 +78,11 @@
 				// only run on text and text area fields when maxlength is set
 				return;
 			}
-			$len = mb_strlen($field['value']);
+			if (function_exists('mb_strlen')) {
+				$len = mb_strlen($field['value']);
+			} else {
+				$len = strlen($field['value']);
+			}
 			$max = $field['maxlength'];
 
 			$classes 	= apply_filters('acf-input-counter/classes', array());
