@@ -1,2 +1,4 @@
 _notes
 *.LCK
+
+/vendor/
