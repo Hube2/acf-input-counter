@@ -57,8 +57,8 @@ function my_acf_counter_filter($display) {
 	return $display;
 }
 ```
-In the example string above `%%len%%` represents where you want the current character count shown and `%%max%%`
-represents where you want the fields maximum length displayed. You can generate this string any way you want.
+In the example string above `%%len%%` represents where you want the current character count shown, `%%max%%`
+represents where you want the fields maximum length displayed and %%remain%% represents where you want the remaining character length displayed. You can generate this string any way you want.
 For example, you can translate it or use `sprintf()`, as long as it contains the two markers where the values
 should be shown. If you do not include these markers then they simply will not be shown. It's up to you to
 make sure they are present.
