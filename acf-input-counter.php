@@ -71,7 +71,6 @@
 		} // end public function scripts
 
 		public function render_field($field) {
-			//echo '<pre>'; print_r($field); echo '</pre>';
 			if (!$this->run() ||
 			    !$field['maxlength'] ||
 			    ($field['type'] != 'text' && $field['type'] != 'textarea')) {
