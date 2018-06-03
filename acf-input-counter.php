@@ -118,6 +118,7 @@
 			$display = apply_filters('acf-input-counter/display', $display);
 			$display = str_replace('%%len%%', '<span class="count">'.$len.'</span>', $display);
 			$display = str_replace('%%max%%', $max, $display);
+			$display = str_replace('%%remain%%', ( $max - $len ), $display);
 			?>
 				<span class="char-count">
 					<?php
