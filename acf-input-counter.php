@@ -185,4 +185,3 @@
 		}
 	} // end if !function_exists
 
-?>
