@@ -110,7 +110,7 @@
 				return;
 			}
 			$display = sprintf(
-				__('chars: %1$s of %2$s', 'acf-counter'),
+				__('Character Count: %1$s / %2$s', 'acf-counter'),
 				'%%len%%',
 				'%%max%%'
 			);
@@ -184,4 +184,3 @@
 				<p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hube02%40earthlink%2enet&lc=US&item_name=Donation%20for%20WP%20Plugins%20I%20Use&no_note=0&cn=Add%20special%20instructions%20to%20the%20seller%3a&no_shipping=1&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" target="_blank">Please consider making a small donation.</a></p><?php
 		}
 	} // end if !function_exists
-

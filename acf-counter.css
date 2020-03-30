@@ -1,6 +1,8 @@
 .acf-field .char-count {
-    display:        inline-block;
-    font-weight:    bold;
-    font-style:     italic;
-    margin-top:     .5em;
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  font-style: italic;
+  color: #666;
 }
