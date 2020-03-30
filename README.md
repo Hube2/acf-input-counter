@@ -1,5 +1,7 @@
 # ACF Input Counter
 
+*Fork of: [https://github.com/Hube2/acf-input-counter](https://github.com/Hube2/acf-input-counter)*
+
 Supports ACF 5
 
 Adds a counter to all text and textarea fields with character limits.
@@ -8,7 +10,7 @@ This is a simple plugin that will add a counter below all ACF text and text area
 characters have been added and what the limit is. The display will look something like this:
 
 ```
-chars: 25 of 55
+Character Count: 25 / 55
 ```
 
 This plugin will not work in ACF 4 for 2 reasons:

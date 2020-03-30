@@ -4,7 +4,7 @@
     "type": "wordpress-plugin",
     "license": "GPL-3.0",
     "keywords": ["wordpress", "plugin", "acf"],
-    "homepage": "https://github.com/Hube2/acf-input-counter",
+    "homepage": "https://github.com/planetargon/acf-input-counter",
     "require": {
         "composer/installers": "^1.5.0"
     }
