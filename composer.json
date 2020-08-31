@@ -1,5 +1,5 @@
 {
-    "name": "wpcomposer/acf-input-counter",
+    "name": "teknologi/acf-input-counter",
     "description": "Adds a counter to all text and textarea fields with character limits",
     "type": "wordpress-plugin",
     "license": "GPL-3.0",
