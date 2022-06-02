@@ -6,6 +6,11 @@
     "keywords": ["wordpress", "plugin", "acf"],
     "homepage": "https://github.com/Hube2/acf-input-counter",
     "require": {
-        "composer/installers": "^1.5.0"
+        "composer/installers": "^2.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
     }
 }
